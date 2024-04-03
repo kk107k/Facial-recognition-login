@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success welcome</title>
+</head>
+<body>
+    <h1>Success login</h1>
+    <h1>Welcome <span id="user_name"></span></h1>
+
+    <script>
+        // Retrieve the user name from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('user_name');
+
+        // Display the user name on the page
+        const userNameElement = document.getElementById('user_name');
+        userNameElement.textContent = userName;
+    </script>
+</body>
+</html>
