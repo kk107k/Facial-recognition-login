@@ -1,3 +1,4 @@
+
 let video;
 let canvas;
 let nameInput;
@@ -12,10 +13,10 @@ function init() {
             video.srcObject = stream;
         })
         .catch((error) => {
-            console.log("error accessing webcame", error);
-            alert("cannot access your webcame")
+            console.log("error accessing webcam", error);
         });
 }
+
 
 function capture() {
     const context = canvas.getContext('2d');
@@ -29,8 +30,8 @@ function register(){
     const photo = dataURItoBlob(canvas.toDataURL());
 
     if(!name || !photo){
-        alert("name and photo required place")
-        return
+        alert("Name and photo are required.");
+        return;
     }
 
     const formData = new FormData();
@@ -43,17 +44,21 @@ function register(){
     })
     .then(response => response.json())
     .then(data => {
+        console.log(data);
         if(data.success){
-            alert("registered successfully");
-            window.location.href = '/';
+            alert("Registered successfully.");
+            const userName = data.name; // Retrieve the associated name from the response
+            window.location.href = `/success?user_name=${userName}`;
         }else{
-            alert("registration failed");
+            alert("Registration failed.");
         }
     })
     .catch(error => {
-        console.log("error registering user", error);
+        console.log("Error registering user", error);
     });
 }
+
+
 
 function login(){
     const context = canvas.getContext('2d');
@@ -74,16 +79,18 @@ function login(){
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
-        if(data.success){
-            alert("login successfully");
-            window.location.href = '/success?user_name=' + nameInput.value;
-        }else{
-            alert("login failed, please try again");
+        if (data.success) {
+            alert("Login successful");
+            const userName = data.name;  // Extracting the name from the response
+            window.location.href = `/success?user_name=${userName}`;  // Redirecting to the success page with the username
+        } else {
+            alert("Login failed, please try again");
         }
-    }).catch(error => {
-        console.log("error login user", error);
+    })
+    .catch(error => {
+        console.log("Error logging in user", error);
     });
+    
     
 }
 
@@ -101,3 +108,4 @@ function dataURItoBlob(dataURI) {
 }
 
 init()
+
