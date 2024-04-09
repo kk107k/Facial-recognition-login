@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+    
+    <header>
+        <h1>Welcome back, {{ user_name }}!</h1>
+        <div class="profile-picture">
+            hehe
+        </div>
+    </header>
+    
+    <section class="recent-activity">
+        <h2>Recent Activity</h2>
+        <div>
+            <!-- Placeholders for recent activity items -->
+        </div>
+    </section>
+    
+    <section class="notifications">
+        <h2>Notifications</h2>
+        <div>
+            <!-- Placeholders for notifications -->
+        </div>
+    </section>
+    
+    <section class="quick-access">
+        <h2>Quick Access</h2>
+        <div>
+            <!-- Placeholders for quick access features -->
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Face Web Login. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

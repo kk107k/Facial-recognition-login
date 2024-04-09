@@ -1,10 +1,12 @@
 import os  # Importing the os module to interact with the operating system
 import datetime  # Importing the datetime module to handle date and time
 import cv2  # Importing OpenCV library for image processing
-from flask import Flask, request, jsonify, render_template  # Importing necessary Flask modules
+from flask import Flask, request, jsonify, render_template, session, redirect  # Importing necessary Flask modules
 import face_recognition  # Importing the face_recognition library for face recognition
 
 app = Flask(__name__)  # Creating a Flask application instance
+
+app.secret_key = 'kiarash'
 
 registered_data = {}  # Dictionary to store registered data (photo filename associated with the provided name)
 
@@ -38,6 +40,7 @@ def register():
 
 @app.route('/login', methods=['POST'])  # Decorator to specify the URL route and HTTP method for login
 def login():
+
     photo = request.files['photo']  # Getting the photo from the form data
 
     uploads_folder = os.path.join(os.getcwd(), 'static', 'uploads')  # Creating path for storing uploaded photos
@@ -71,16 +74,27 @@ def login():
             matches = face_recognition.compare_faces(registered_face_encodings, login_face_encodings[0])  # Comparing the face encodings
 
             if any(matches):  # Checking if any of the face encodings match
-                response = {'success': True, 'name': name}  # Creating a success response with the registered name
-                return jsonify(response)  # Returning the success response as JSON
-
-    response = {'success': False}  # Creating a failure response if no match is found
-    return jsonify(response)  # Returning the failure response as JSON
-
+                session['logged_in'] = True  # Set a session value when the user logs in successfully
+                session['user_name'] = name  # the verified user's name
+                print("Session status:", "logged_in" in session)
+                print("User name:", session.get("user_name"))
+                response = {'success': True, 'name': name}
+                return jsonify(response)
+    
 @app.route('/success')  # Decorator to specify the URL route for the success page
 def success():
     user_name = request.args.get('user_name')  # Getting the username from the query parameters
     return render_template('success.html', user_name=user_name)  # Rendering the success.html template with the username
+
+@app.route('/home')
+def home():
+    if 'logged_in' in session and 'user_name' in session:
+        print("Session status:", "logged_in" in session)
+        print("User name:", session.get("user_name"))
+        return render_template('home.html', user_name=session['user_name'])
+    else:
+        return redirect("/")
+
 
 if __name__ == '__main__':
     app.run(debug=True)  # Running the Flask application in debug mode
