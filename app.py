@@ -1,14 +1,16 @@
 import os  # Importing the os module to interact with the operating system
-import datetime  # Importing the datetime module to handle date and time
 import cv2  # Importing OpenCV library for image processing
-from flask import Flask, request, jsonify, render_template, session, redirect  # Importing necessary Flask modules
+from flask import Flask, request, jsonify, render_template, session, redirect, app  # Importing necessary Flask modules
+from datetime import timedelta, datetime
 import face_recognition  # Importing the face_recognition library for face recognition
 
 app = Flask(__name__)  # Creating a Flask application instance
 
 app.secret_key = 'kiarash'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)
 
 registered_data = {}  # Dictionary to store registered data (photo filename associated with the provided name)
+
 
 @app.route('/')  # Decorator to specify the URL route for the index page
 def index():
@@ -76,11 +78,13 @@ def login():
             if any(matches):  # Checking if any of the face encodings match
                 session['logged_in'] = True  # Set a session value when the user logs in successfully
                 session['user_name'] = name  # the verified user's name
+                session.permanent = True
                 print("Session status:", "logged_in" in session)
                 print("User name:", session.get("user_name"))
                 response = {'success': True, 'name': name}
                 return jsonify(response)
-    
+            
+  
 @app.route('/success')  # Decorator to specify the URL route for the success page
 def success():
     user_name = request.args.get('user_name')  # Getting the username from the query parameters
@@ -94,6 +98,13 @@ def home():
         return render_template('home.html', user_name=session['user_name'])
     else:
         return redirect("/")
+    
+
+@app.route('/logout')
+def logout():
+    print("Logged out")
+    session.clear()  # Clear the session data
+    return redirect("/")  # You can redirect or return a JSON response
 
 
 if __name__ == '__main__':

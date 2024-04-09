@@ -94,6 +94,22 @@ function login(){
     
 }
 
+function logout() {
+    fetch('/logout', {
+        method: 'GET'
+    })
+    .then(response => {
+        if(response.ok) {  // Check if the response status is OK (200-299)
+            window.location.href = "/";  // Redirect to the home page
+        }
+    })
+    .catch(error => {
+        console.log("Error logging out", error);
+    });
+}
+
+
+
 function dataURItoBlob(dataURI) {
     const byteString = atob(dataURI.split(",")[1]);
     const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
