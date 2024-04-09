@@ -25,18 +25,15 @@ function capture() {
     video.style.display = 'none';
 }
 
-function register(){
-    const name = nameInput.value;
+function register() {
+    const username = document.getElementById('regUsername').value;
+    const password = document.getElementById('regPassword').value;
     const photo = dataURItoBlob(canvas.toDataURL());
 
-    if(!name || !photo){
-        alert("Name and photo are required.");
-        return;
-    }
-
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('photo', photo, `${name}.jpg`);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('photo', photo, `${username}.jpg`);
 
     fetch('/register', {
         method: 'POST',
@@ -44,13 +41,11 @@ function register(){
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data);
-        if(data.success){
+        if (data.success) {
             alert("Registered successfully.");
-            const userName = data.name; // Retrieve the associated name from the response
-            window.location.href = `/success?user_name=${userName}`;
-        }else{
-            alert("Registration failed.");
+            window.location.href = "/success?user_name=" + username;
+        } else {
+            alert("Registration failed: " + data.error);
         }
     })
     .catch(error => {
@@ -60,18 +55,15 @@ function register(){
 
 
 
-function login(){
-    const context = canvas.getContext('2d');
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+function login() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
     const photo = dataURItoBlob(canvas.toDataURL());
 
-    if(!photo){
-        alert("photo required please")
-        return
-    }
-
     const formData = new FormData();
-    formData.append('photo', photo, `login.jpg`);
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('photo', photo, 'login.jpg');
 
     fetch('/login', {
         method: 'POST',
@@ -80,18 +72,15 @@ function login(){
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert("Login successful");
-            const userName = data.name;  // Extracting the name from the response
-            window.location.href = `/success?user_name=${userName}`;  // Redirecting to the success page with the username
+            alert("Login successful.");
+            window.location.href = "/success?user_name=" + username;
         } else {
-            alert("Login failed, please try again");
+            alert("Login failed: " + data.error);
         }
     })
     .catch(error => {
-        console.log("Error logging in user", error);
+        console.log("Error logging in", error);
     });
-    
-    
 }
 
 function logout() {
